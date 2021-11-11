@@ -1,25 +1,63 @@
 import React, { Component } from 'react';
+import giphy from 'giphy-api';
 
 import SearchBar from './search_bar';
 import GifList from './gif_list';
 import Gif from './gif';
 
+// const GIPHY_API_KEY = 'IRyS7ytLcwwI8CSqiVVSmzOoQWV7RCIr';
+
 class App extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      gifs: [],
+      selectedGifId: "oKQGM5S2mwx5C/giphy.webp?cid=ecf05e47prue3bcjers7a8bhrynf3send0df6zr196bfwsaw&rid=giphy.webp&ct=g"
+    };
+    // this.search("cat");
+  }
+
+  // search(query) {
+  //   const giphEndpoint = `https://api.giphy.com/v1/gifs/search?api_key=${GIPHY_API_KEY}&q=${query}&limit=10`
+  //   fetch(giphEndpoint).then(response => response.json()).then((data) => {
+  //     const gifs = data.data.map(giph => giph.id)
+  //     this.setState({
+  //       gifs: gifs
+  //     });
+  //   });
+  // }
+
+  selectGif = (id) => {
+    this.setState({
+      selectedGifId: id
+    });
+  }
+
+  search = (query) => {
+    giphy('IRyS7ytLcwwI8CSqiVVSmzOoQWV7RCIr').search({
+      q: query,
+      rating: "g",
+      limit: 15,
+    }, (error, result) => {
+      this.setState({
+        gifs: result.data
+      });
+    });
+  };
+
+
   render() {
-    const gifs = [
-      { id: "l3Ucp0B8aX3dHbjvW/giphy.gif?cid=790b76117057f1b8592921c26aff3070d8268e9dd0d3dc45&rid=giphy.gif&ct=g" },
-      { id: "Phzg1XZgJTeZG/giphy.gif?cid=ecf05e476a67a3dcadcf6100d78467b611696e7c5c26d6e1&rid=giphy.gif&ct=g" }
-    ];
     return (
       <div>
         <div className="left-scene">
-          <SearchBar />
+          <SearchBar searchFunction={this.search} />
           <div className="selected-gif">
-            <Gif id="oKQGM5S2mwx5C/giphy.webp?cid=ecf05e47prue3bcjers7a8bhrynf3send0df6zr196bfwsaw&rid=giphy.webp&ct=g" />
+            <Gif id={this.state.selectedGifId} />
           </div>
         </div>
         <div className="right-scene">
-          <GifList gifs={gifs} />
+          <GifList gifs={this.state.gifs} selectGif={this.selectGif} />
         </div>
       </div>
     );
