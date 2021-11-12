@@ -6,10 +6,12 @@ class Gif extends Component {
   };
 
   render() {
+    if (!this.props.id) {
+      return null;
+    }
+    
     const src = `https://media2.giphy.com/media/${this.props.id}/200.gif`;
     return (
-      // add onClick function here, handle the click, change the state of App
-    // I will need a  function passed to the children
       <img
         className="gif"
         src={src}
